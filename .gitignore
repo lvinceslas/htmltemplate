@@ -4,3 +4,7 @@ composer.phar
 
 ##### Php-cs-fixer
 .php_cs.cache
+
+##### PHPUnit
+.phpunit.result.cache
+/coverage/
