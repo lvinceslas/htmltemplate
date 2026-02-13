@@ -1,7 +1,7 @@
 <?php
 
 /**
- * © 2017 - 2020
+ * © 2017 - 2026
  *
  * Lionel Vinceslas <lionel.vinceslas@gmail.com>
  *
@@ -37,7 +37,6 @@
 
 namespace Lvinceslas\Html;
 
-
 /**
  * Simple HTML template management class
  *
@@ -49,18 +48,15 @@ namespace Lvinceslas\Html;
  */
 class HtmlTemplate
 {
-    private $filepath;
-    private $html;
-    
+    private string $filepath;
+    private string $html;
+
     /**
      * @param string $filepath the HTML template filepath
      */
     public function __construct(string $filepath)
     {
-        if (!file_exists($filepath)) 
-            throw new \InvalidArgumentException("Error : path '$filepath' does not exist !");
-        if (!is_readable($filepath))
-            throw new \RuntimeException("Error : file '$filepath' not readable !");
+        $this->validateFilepath($filepath);
 
         $this->filepath = $filepath;
         $this->html = file_get_contents($filepath);
@@ -87,30 +83,27 @@ class HtmlTemplate
     /**
      * Set the Html template filepath
      * @param string $filepath the HTML template filepath
-     * @return bool
+     * @return static
      */
-    public function setFilepath(string $filepath): bool
+    public function setFilepath(string $filepath): static
     {
-        if (!file_exists($filepath)) 
-            throw new \InvalidArgumentException("Error : path '$filepath' does not exist !");
-        if (!is_readable($filepath))
-            throw new \RuntimeException("Error : file '$filepath' not readable !");
-            
+        $this->validateFilepath($filepath);
+
         $this->filepath = $filepath;
         $this->html = file_get_contents($filepath);
-        return true;
+        return $this;
     }
 
     /**
      * Set the value of the given tag name
      * @param string $name
-     * @param string $value
-     * @return bool
+     * @param string|null $value
+     * @return static
      */
-    public function set(string $name, $value = null): bool
+    public function set(string $name, ?string $value = null): static
     {
-        $this->html = str_replace("{%".$name."%}", $value, $this->html);
-        return true;
+        $this->html = str_replace("{%" . $name . "%}", $value ?? '', $this->html);
+        return $this;
     }
 
     /**
@@ -120,5 +113,22 @@ class HtmlTemplate
     public function show(): void
     {
         echo $this->html;
+    }
+
+    /**
+     * Validate that the given filepath exists, is a file, and is readable
+     * @param string $filepath
+     * @return void
+     * @throws \InvalidArgumentException if the path does not exist or is not a file
+     * @throws \RuntimeException if the file is not readable
+     */
+    private function validateFilepath(string $filepath): void
+    {
+        if (!file_exists($filepath) || !is_file($filepath)) {
+            throw new \InvalidArgumentException("Error : path '$filepath' does not exist !");
+        }
+        if (!is_readable($filepath)) {
+            throw new \RuntimeException("Error : file '$filepath' not readable !");
+        }
     }
 }
