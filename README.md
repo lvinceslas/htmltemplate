@@ -50,13 +50,21 @@ echo $template;
 
 ## Running the test suite
 
-The unit tests are based on PHPUnit and can be executed via Docker:
+Unit tests use [PHPUnit](https://phpunit.de/) 9.6 (dev dependency). From a clone of this repository, install dependencies then run the suite:
+
+```bash
+composer install
+./vendor/bin/phpunit
+```
+
+Configuration is read from `phpunit.xml.dist` at the project root.
+
+### Using Docker (without Composer installed locally)
 
 ```bash
 docker run --rm -it \
   -v "$(pwd):/app" \
   -w /app \
-  composer ./vendor/bin/phpunit
+  composer:latest \
+  sh -c "composer install --no-interaction && ./vendor/bin/phpunit"
 ```
-
-This command uses the `phpunit.xml.dist` configuration file located at the root of the project.
